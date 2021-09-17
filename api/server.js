@@ -19,5 +19,14 @@ server.use('/api/jokes', restrict, jokesRouter); // only logged-in users should 
 server.get('/', (req, res) => {
     res.status(200).json({ message: "Welcome to the Jokes server."})
 })
+server.use('*', (req, res) => {
+    res.status(404).json({ message: "does not exist" })
+})
+
+server.use((err,req,res,next)=>{  
+    res.status(err.status||500).json({
+        message:err.message
+    })
+})
 
 module.exports = server;
