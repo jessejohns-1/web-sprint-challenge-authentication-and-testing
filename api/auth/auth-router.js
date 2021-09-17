@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const bcrypt = require('bcryptjs')
-const users = require('../users/model')
-const tokenBuilder = require('../tokenBuilder');
+const bcrypt = require("bcryptjs");
+const users = require("../users/model");
+const tokenBuilder = require("../../tokenBuilder");
+
 
 const vdUsername = (req, res, next) => {
   const { username } = req.body;
