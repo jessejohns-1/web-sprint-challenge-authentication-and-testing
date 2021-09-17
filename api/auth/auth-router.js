@@ -61,8 +61,6 @@ router.post('/register', vdUser, vdUsername, (req, res, next) => {
 });
 
 router.post('/login',vdUser,vdUsernameExists, (req, res,next) => {
-  res.end('implement login, please!');
- 
       if (bcrypt.compareSync(req.body.password, req.user.password)){
         const token = tokenBuilder(req.user)
         res.status(200).json({

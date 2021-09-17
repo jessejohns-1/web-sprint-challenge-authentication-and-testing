@@ -20,10 +20,10 @@ server.get('/', (req, res) => {
     res.status(200).json({ message: "Welcome to the Jokes server."})
 })
 server.use('*', (req, res) => {
-    res.status(404).json({ message: "does not exist" })
+    res.status(404).json({ message: "that does not exist" })
 })
 
-server.use((err,req,res,next)=>{  
+server.use((err,req,res,next)=>{ // eslint-disable-line
     res.status(err.status||500).json({
         message:err.message
     })
