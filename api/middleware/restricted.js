@@ -3,11 +3,11 @@ const { JWT_SECRET } = require('../../config')
 
 module.exports = (req, res, next) => {
   const token = req.headers.authorization
-  //If there is no token at all
+  //token at all do this
   if (!token) return next({status: 401, message: "token required"})
   //If there is a token
   else {
-      //Attempt to verify
+      // verify
       jwt.verify(token, JWT_SECRET,(err, decoded) => {
           //If doesn't verify
           if (err) return next({status: 401, message: "token invalid", realErrorMessage: err.message,})
