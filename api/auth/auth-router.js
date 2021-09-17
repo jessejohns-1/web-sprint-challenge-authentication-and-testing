@@ -1,4 +1,52 @@
 const router = require('express').Router();
+const bcrypt = require('bcryptjs')
+const users = require('../users/model')
+const tokenBuilder = require('../tokenBuilder');
+
+const vdUsername = (req, res, next) => {
+  const { username } = req.body;
+  users.findBy({ username })
+    .then(([user]) => {
+      if (user) {
+        next({
+          status: 401,
+          message: "username taken"
+        })
+      } else {
+        next();
+      }
+    })
+}
+
+const vdUser = (req, res, next) => {
+  const { username, password } = req.body;
+  if (!username || !username.trim()
+    || !password || !password.trim()
+  ) {
+    next({
+      status: 401,
+      message: "username and password required"
+    })
+  } else {
+    next();
+  }
+}
+
+const vdUsernamExists = (req, res, next) => {
+  const { username } = req.body;
+  users.findBy({ username })
+    .then(([user]) => {
+      if (!user) {
+        next({
+          status: 401,
+          message: "invalid credentials"
+        })
+      } else {
+        req.user = user;
+        next();
+      }
+    })
+}
 
 router.post('/register', (req, res) => {
   res.end('implement register, please!');
@@ -29,7 +77,7 @@ router.post('/register', (req, res) => {
   */
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res,next) => {
   res.end('implement login, please!');
   /*
     IMPLEMENT
@@ -54,6 +102,18 @@ router.post('/login', (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+      if (bcrypt.compareSync(req.body.password, req.user.password)){
+        const token = tokenBuilder(req.user)
+        res.status(200).json({
+          message: `welcome, ${req.user.username}`,
+          token,
+        })
+      }else{
+        next({
+      status: 401,
+      message: "invalid credentials"
+    })
+  }
 });
 
 module.exports = router;
